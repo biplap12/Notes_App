@@ -1,0 +1,28 @@
+import React from 'react'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Signup from './pages/SignUp'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Navbar from './components/Navbar'
+
+const routes=(
+  <Router>
+    <Navbar/>
+    <Routes>
+      <Route path="/dashboard" element={<Home/>} />
+      <Route path="/login" element={<Login/>} />
+      <Route path="/signUp" element={<Signup/>} />
+    </Routes>
+  </Router>
+)
+
+const App = () => {
+  return (
+    <>
+      {routes}    
+    </>
+
+  )
+}
+
+export default App
