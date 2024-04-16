@@ -3,19 +3,24 @@ import ProfileInfo from './Card/ProfileInfo'
 import { useNavigate } from 'react-router-dom'
 import SearchBar from './SearchBar/SearchBar'
 
-const Navbar = () => {
+
+const Navbar = ({userInfo, searchNotes,clearSearch }) => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState("");
     const onLogout = () => {
+        localStorage.clear();
         navigate("/login")
-    }
+    };
 
     const handleSearch = () => {
-        console.log(searchQuery);
+       if(searchQuery){
+        searchNotes(searchQuery);
+       }
     }
 
     const onClearSearch = () => {
         setSearchQuery("");
+        clearSearch();
     }
 
   return (
@@ -25,14 +30,12 @@ const Navbar = () => {
 
         <SearchBar 
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={({target}) => setSearchQuery(target.value)}
         handleSearch={handleSearch}
         onClearSearch={onClearSearch}
         />
 
-        <ProfileInfo
-        onLogout={onLogout}
-
+        <ProfileInfo userInfo={userInfo} OnLogout={onLogout}
         />
     </div>
     </>

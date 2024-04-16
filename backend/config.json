@@ -1,0 +1,4 @@
+{
+    "connectionString": "mongodb+srv://Notes_App:Notes_AppBiplap@cluster0.kyshyjk.mongodb.net/Notes_App?retryWrites=true&w=majority&appName=Cluster0"
+
+}

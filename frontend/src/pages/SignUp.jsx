@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import PasswordInput from '../components/PasswordInput'
 import { Link } from 'react-router-dom'
 import { validateEmail , validatePassword } from '../utils/helper'
+import axiosInstance from '../utils/axiosInstance'
+import { useNavigate } from 'react-router-dom'
+
 
 
 const SignUp = () => {
@@ -9,8 +12,9 @@ const SignUp = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     if(!name || !email || !password){
       setError("Please fill all the fields")
@@ -33,10 +37,38 @@ const SignUp = () => {
       return;
     }
 
-    setError('');
 
     // API call to signup user
-    
+    try {
+      
+      const response = await axiosInstance.post('/create-account', {
+        fullName: name,
+        email: email,
+        password: password
+      });
+        if(response.data && response.data.error){
+          setError(response.data.message);
+          return;
+        }
+
+      if(response.data && response.data.accessToken){
+        alert("Account created successfully.");
+        localStorage.setItem('token', response.data.accessToken);
+        navigate('/dashboard');
+
+      }
+
+
+    } catch (error) {
+      if(error.response && error.response.data && error.response.data.message){
+        setError(error.response.data.message);
+
+      }else{
+        setError("Something went wrong. Please try again later");
+      }
+      
+    }
+    setError('');
      
   }
 
