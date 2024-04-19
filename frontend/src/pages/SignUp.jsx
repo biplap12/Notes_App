@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom'
 import { validateEmail , validatePassword } from '../utils/helper'
 import axiosInstance from '../utils/axiosInstance'
 import { useNavigate } from 'react-router-dom'
-
-
+import { toast } from 'react-hot-toast'
 
 const SignUp = () => {
   const [name, setName] = useState('')
@@ -48,21 +47,20 @@ const SignUp = () => {
       });
         if(response.data && response.data.error){
           setError(response.data.message);
+          toast.error(response.data.message)
           return;
         }
 
       if(response.data && response.data.accessToken){
-        alert("Account created successfully.");
+        toast.success(response.data.message)
         localStorage.setItem('token', response.data.accessToken);
-        navigate('/dashboard');
+        navigate('/');
 
       }
-
-
     } catch (error) {
       if(error.response && error.response.data && error.response.data.message){
         setError(error.response.data.message);
-
+        toast.error(error.response.data.message)
       }else{
         setError("Something went wrong. Please try again later");
       }

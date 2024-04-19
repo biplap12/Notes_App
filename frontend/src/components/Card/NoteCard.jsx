@@ -15,7 +15,7 @@ const NoteCard = ({
 }) => {
   return (
     <div className="border p-4 rounded bg-white hover:shadow-xl transition-all ease-in-out duration-150">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between">
         <div>
         <h6 className="text-sm font-medium">
             {title}

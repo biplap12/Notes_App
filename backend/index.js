@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const authenticateToken = require('./utilities');
 const User = require('./models/user.models');
 const Note = require('./models/note.model');
+const bcrypt = require('bcryptjs');
 
 dotenv.config();
 const app = express();
@@ -40,10 +41,15 @@ app.post('/create-account', async (req, res) => {
         return res.status(400).json({error:true, message: 'User already exist'});
     }
 
+    // password hash 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+
     const user = new User({
         fullName,
         email,
-        password
+        password: hashedPassword
     });
 
     await user.save();
@@ -51,40 +57,53 @@ app.post('/create-account', async (req, res) => {
     const accessToken = jwt.sign({ user }, 
         process.env.ACCESS_TOKEN_SECRET ,
          {expiresIn: '3600m'});
-     return res.status(200).json({error: false, user, accessToken, message: 'Registration successful'});
+     return res.status(200).json({error: false, user, accessToken, message: 'Registration successful!!'});
  
 }   
 );
 
 //login
+//login
 app.post('/login', async (req, res) => {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
 
-    if(!email) {
-        return res.status(400).json({error:true, message: 'Email is required'});
-    }
+    try {
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).json({ error: true, message: 'Email is required' });
+        }
 
-    if(!password) {
-        return res.status(400).json({error:true, message: 'Password is required'});
-    }
+        // Check if password is provided
+        if (!password) {
+            return res.status(400).json({ error: true, message: 'Password is required' });
+        }
 
-    const user = await User.findOne({email: email});
-    if(!user) {
-        return res.status(400).json({error:true, message: 'Invalid credentials'});
+        // Find user by email
+        const user = await User.findOne({ email });
+
+        // If user does not exist
+        if (!user) {
+            return res.status(400).json({ error: true, message: 'Invalid credentials' });
+        }
+
+        // Compare passwords
+        const validPassword = await bcrypt.compare(password, user.password);
+
+        // If password is invalid
+        if (!validPassword) {
+            return res.status(400).json({ error: true, message: 'Invalid credentials' });
+        }
+
+        // If authentication is successful
+        const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3600m' });
+
+        // Send success response
+        return res.status(200).json({ error: false, user, accessToken, message: 'Login successful!' });
+    } catch (error) {
+        // If an error occurs
+        return res.status(500).json({ error: true, message: 'Internal server error' });
     }
-    if(user.password !== password) {
-        return res.status(400).json({error:true, message: 'Invalid password'});
-    }
-    if(user.email && user.password) {
-    const accessToken = jwt.sign({ user }, 
-        process.env.ACCESS_TOKEN_SECRET ,
-         {expiresIn: '3600m'});
-     return res.status(200).json({error: false, user, accessToken, message: 'Login successful'});
-    }
-    else {
-        return res.status(400).json({error:true, message: 'Invalid credentials'});
-    }
-    });
+});
 
 //get user
 app.get('/get-user', authenticateToken, async (req, res) => {

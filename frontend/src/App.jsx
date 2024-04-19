@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 const routes=(
   <Router>
     <Routes>
-      <Route path="/dashboard" element={<Home/>} />
+      <Route path="/" element={<Home/>} />
       <Route path="/login" element={<Login/>} />
       <Route path="/signUp" element={<Signup/>} />
     </Routes>

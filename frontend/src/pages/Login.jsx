@@ -3,7 +3,8 @@ import PasswordInput from '../components/PasswordInput'
 import { Link, useNavigate } from 'react-router-dom'
 import { validateEmail , validatePassword } from '../utils/helper'
 import axiosInstance from '../utils/axiosInstance'
-
+// react-hot-toast
+import { toast } from 'react-hot-toast'
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -45,14 +46,17 @@ const Login = () => {
         password: password
       });
       if(response.data && response.data.accessToken){
+        toast.success(response.data.message)
         localStorage.setItem('token', response.data.accessToken);
-        navigate('/dashboard');
+        navigate('/');
+    
       }
 
 
     } catch (error) {
       if(error.response && error.response.data && error.response.data.message){
         setError(error.response.data.message);
+        toast.error(error.response.data.message)
       }else{
         setError("Something went wrong. Please try again later");
       }
