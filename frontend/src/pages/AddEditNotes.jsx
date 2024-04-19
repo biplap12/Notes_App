@@ -117,7 +117,8 @@ const AddEditNotes = ({
     </div>
     {error && <p className="text-red-500 text-xs pt-4">{error}</p>}
     
-    <button className=" btn-primary font-medium mt-5 p-3" onClick={handleAddNote}>
+    <button className="btn-primary font-medium mt-5 p-3"
+     onClick={handleAddNote}>
         {type === "edit" ? "Update" : "Add"}
     </button>
 

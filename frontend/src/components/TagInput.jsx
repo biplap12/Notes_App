@@ -52,7 +52,7 @@ const TagInput = ({
                 value={inputValue}
 
             />
-            <button className="w-8 h-8 items-center justify-center rounded border border-blue-700 hover:bg-blue-400" onClick={()=>addNewTag()}>
+    <button className="w-8 h-8 flex items-center justify-center rounded-2xl bg-slate-100 hover:bg-slate-300" onClick={()=>addNewTag()}>
                 <MdAdd className='text-2xl text-blue-700 '/>
                 </button>
         </div>
